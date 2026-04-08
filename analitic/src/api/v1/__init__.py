@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from . import events
+from src.api.v1 import events
 
 router = APIRouter(prefix="/v1")
 
