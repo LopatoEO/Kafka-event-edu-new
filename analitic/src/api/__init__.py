@@ -1,2 +1,2 @@
 # API package
-from . import v1
+from src.api import v1
