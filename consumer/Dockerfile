@@ -11,4 +11,4 @@ RUN pip install --upgrade pip && \
 
 COPY . .
 
-CMD ["python", "-m", "consumer.main"]
+CMD ["python", "-m", "src.main"]

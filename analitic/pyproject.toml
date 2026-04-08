@@ -1,5 +1,5 @@
 [project]
-name = "analitic"
+name = "analitics-service"
 version = "0.1.0"
 description = ""
 authors = [
@@ -10,7 +10,9 @@ dependencies = [
     "fastapi (>=0.135.1,<0.136.0)",
     "aiochclient (>=2.6.0,<3.0.0)",
     "uvicorn (>=0.42.0,<0.43.0)",
-    "aiohttp (>=3.13.3,<4.0.0)"
+    "aiohttp (>=3.13.3,<4.0.0)",
+    "dishka (>=1.9.1,<2.0.0)",
+    "pydantic-settings (>=2.13.1,<3.0.0)"
 ]
 
 
