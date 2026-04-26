@@ -1,22 +1,21 @@
-from aiokafka import AIOKafkaProducer
-from typing import AsyncGenerator
 from dishka import Provider, provide, Scope
-from src.settings import settings
-from src.service.event_service import EventService
+from src.services.event_service import EventService
+from src.broker.producer_kafka import KafkaProducer
+from src.settings.kafka import KafkaSettings
+from src.settings.settings import app_settings
 
 
-class KafkaProvider(Provider):
+class KafkaSettingsProvider(Provider):
     @provide(scope=Scope.APP)
-    async def get_kafka(self) -> AsyncGenerator[AIOKafkaProducer, None]:
-        producer = AIOKafkaProducer(bootstrap_servers=settings.KAFKA_BOOTSTRAP_SERVERS.split(","))
-        await producer.start()
-        try:
-            yield producer
-        finally:
-            await producer.stop()
+    def get_kafka_settings(self) -> KafkaSettings:
+        return app_settings.KAFKA_SETTINGS
+
+class KafkaProducerProvider(Provider):
+    @provide(scope=Scope.REQUEST)
+    async def get_producer(self, settings: KafkaSettings) -> KafkaProducer:
+        return KafkaProducer(settings)
 
 class EventServiceProvider(Provider):
-
     @provide(scope=Scope.REQUEST)
-    async def get_service(self, client: AIOKafkaProducer) -> EventService:
-        return EventService(client)
+    async def get_service(self, producer: KafkaProducer) -> EventService:
+        return EventService(producer=producer)

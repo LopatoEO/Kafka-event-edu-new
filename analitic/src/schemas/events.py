@@ -7,11 +7,11 @@ class EventsSearchParamsDTO(BaseModel):
     date_from: datetime
     date_to: datetime
 
-class EventDTO(BaseModel):
+class EventResponseDTO(BaseModel):
     user_id: int
     type: str
     value: str
     ts: datetime
 
-class EventsResponseDTO(BaseModel):
-    events: list[EventDTO]
+class EventListResponseDTO(BaseModel):
+    events: list[EventResponseDTO]

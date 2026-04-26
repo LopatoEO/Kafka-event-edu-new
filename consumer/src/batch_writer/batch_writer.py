@@ -1,26 +1,25 @@
-from src.repository.event_repository import EventRepository
-from src.settings import settings
+from consumer.src.repository.event_repository_interface import IEventRepository
+
 
 class BatchWriter:
-    
-    def __init__(self, repository: EventRepository):  
-        self.repository = repository
-        self.batch_size = settings.BATCH_SIZE
+    def __init__(self, repository: IEventRepository, batch_size: int) -> None:
+        self._repository = repository
+        self.batch_size = batch_size
         self.batch = []
         self.initialized = True
 
-    def add(self, item):    
+    def add(self, item) -> None:
         self.batch.append(item)
-    
-    def commit(self):
+
+    def commit(self) -> bool:
         if len(self.batch) >= self.batch_size:
-            self.repository.insert_events(self.batch)
+            self._repository.insert_events(self.batch)
             self.flush()
             return True
         return False
 
-    def flush(self):
+    def flush(self) -> None:
         if not self.batch:
             return
-        self.repository.insert_events(self.batch)
+        self._repository.insert_events(self.batch)
         self.batch.clear()

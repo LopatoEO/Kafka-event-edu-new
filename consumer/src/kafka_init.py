@@ -1,10 +1,13 @@
+import contextlib
+import socket
+import time
+
 from confluent_kafka.admin import AdminClient
 from confluent_kafka.cimpl import NewTopic
-import time
-import socket
-from src.settings import settings
 
-BROKERS = settings.KAFKA_BOOTSTRAP_SERVERS
+from src.settings.settings import app_settings
+
+BROKERS = app_settings.KAFKA_SETTINGS.KAFKA_BOOTSTRAP_SERVERS
 FIRST_BROKER = BROKERS.split(",")[0].strip().split(":")
 
 TOPICS = [
@@ -12,10 +15,13 @@ TOPICS = [
     NewTopic(topic="dlq", num_partitions=3, replication_factor=2),
 ]
 
+
 def wait_for_kafka():
     while True:
         try:
-            with socket.create_connection((FIRST_BROKER[0], int(FIRST_BROKER[1])), timeout=5):
+            with socket.create_connection(
+                (FIRST_BROKER[0], int(FIRST_BROKER[1])), timeout=5
+            ):
                 return
         except OSError:
             time.sleep(5)
@@ -33,11 +39,9 @@ def create_topics():
 
     fs = admin.create_topics(new_topics)
 
-    for topic, f in fs.items():
-        try:
+    for _topic, f in fs.items():
+        with contextlib.suppress(Exception):
             f.result()
-        except Exception:
-            pass
 
 
 if __name__ == "__main__":

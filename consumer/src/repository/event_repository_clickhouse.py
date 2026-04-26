@@ -1,8 +1,11 @@
 from datetime import datetime
+
 from clickhouse_connect.driver import Client
 
+from src.repository.event_repository_interface import IEventRepository
 
-class EventRepository:
+
+class EventRepository(IEventRepository):
     def __init__(self, client: Client):
         self.client = client
 
@@ -15,7 +18,7 @@ class EventRepository:
                 e["user_id"],
                 e["event"],
                 str(e["value"]),
-                datetime.fromisoformat(e["received_at"].replace("Z", "+00:00"))
+                datetime.fromisoformat(e["received_at"].replace("Z", "+00:00")),
             )
             for e in events
         ]
